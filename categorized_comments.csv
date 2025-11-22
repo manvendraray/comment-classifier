@@ -1,0 +1,29 @@
+﻿Comment,Sentiment,Category,Key Themes
+The delivery was late,Negative,Delivery,Delivery was late
+Amazing customer service!,Positive,Customer Service,customer service
+Product quality is poor,Negative,Product Quality,Poor product quality
+The thing Iis amazing,Positive,Product Quality,amazing
+The size was accurate,Positive,Product Quality,Accurate size
+I had to wait on hold for too long,Negative,Customer Service,"Wait time, Customer service"
+Wow! The delievery is super fast,Positive,Delivery,Fast delivery
+The product has a strong odor,Negative,Product Quality,"Strong odor, Product issue"
+"""The product quality exceeded my expectations.""",Positive,Product Quality,"Product Quality, Exceeded Expectations"
+"""I had an issue, but it was resolved promptly.""",Positive,Customer Service,"issue resolved, prompt service"
+"""The website is user-friendly and easy to navigate.""",Positive,Website/App,"user-friendly, easy to navigate"
+"""The item arrived late, but customer service was responsive.""",Negative,Customer Service,"item arrived late, customer service responsive"
+"""I love the design, but the material feels cheap.""",Negative,Product Quality,Material feels cheap
+"""The instructions were clear and easy to follow.""",Positive,Product Quality,"Clear instructions, Easy to follow"
+"""I had trouble with the payment process.""",Negative,Pricing,"payment process, trouble"
+"""The colors are vibrant and true to the pictures.""",Positive,Product Quality,"Colors, Product Accuracy"
+"""I received excellent assistance in-store.""",Positive,Customer Service,"excellent assistance, in-store"
+"""The product stopped working after a week.""",Negative,Product Quality,"Product stopped working, Short lifespan"
+"""The return process was hassle-free.""",Positive,Delivery,hassle-free return process
+"""I appreciate the eco-friendly packaging.""",Positive,Product Quality,Eco-friendly packaging
+"""The size chart was accurate.""",Positive,Product Quality,Size chart accurate
+"""I found a better price elsewhere.""",Negative,Pricing,"price, comparison"
+"""The customer service representative was rude.""",Negative,Customer Service,Rude customer service representative
+"""The product matches the description perfectly.""",Positive,Product Quality,"Product matches description, Quality meets expectations"
+"""I had to wait on hold for too long.""",Negative,Customer Service,"Long wait time, Customer Service"
+"""The app is convenient and works well.""",Positive,Website/App,"convenient, works well"
+"""The product has a strong odor.""",Negative,Product Quality,Product Odor
+"""I would recommend this to my friends and family.""",Positive,Product Quality,"Recommendation, Satisfied Customer"

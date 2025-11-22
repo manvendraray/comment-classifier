@@ -271,7 +271,7 @@ def sidebar_content():
     )
     st.sidebar.markdown("---")
     st.sidebar.markdown("Built by **Manvendra Ray**")
-    st.sidebar.markdown("[GitHub](https://github.com/raymanvendra)")
+    st.sidebar.markdown("[GitHub](https://github.com/manvendraray")
     st.sidebar.markdown("[LinkedIn](https://www.linkedin.com/in/manvendraray/)")
     st.sidebar.markdown("[Email](mailto:mr6695@nyu.edu)")
     st.sidebar.caption("Built as a technical case study.")

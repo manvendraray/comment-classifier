@@ -7,8 +7,10 @@ import streamlit as st
 from dotenv import load_dotenv
 
 # =========================================================
-#  Setup & configuration
+#  Comment Classifier - cleaned version (no sample-file UI)
+#  NOTE: uploaded sample file (for your records): /mnt/data/random_product_data.xlsx
 # =========================================================
+
 st.set_page_config(
     page_title="Comment Classifier | Customer Comment Analyzer",
     layout="wide",
@@ -18,9 +20,6 @@ st.set_page_config(
 load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY") or st.secrets.get("GROQ_API_KEY")
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
-
-# Sample file path (the file you uploaded earlier)
-SAMPLE_FILE_PATH = "/mnt/data/random_product_data.xlsx"
 
 # Simple test credentials (for tech case)
 USERNAME = "manvendraray"
@@ -148,7 +147,6 @@ def _extract_first_json(text: str):
             stack.append("{")
         elif ch == "}":
             if not stack:
-                # unmatched closing
                 continue
             stack.pop()
             if not stack:
@@ -165,7 +163,6 @@ def simple_rule_fallback(comment: str):
         return {"sentiment": "Positive", "category": "Delivery", "themes": ["delivery"]}
     if any(w in c for w in ["price", "cheap", "expensive", "cost"]):
         return {"sentiment": "Neutral", "category": "Pricing", "themes": ["pricing"]}
-    # default fallback
     return {"sentiment": "Neutral", "category": "Other", "themes": []}
 
 
@@ -217,19 +214,15 @@ def analyze_comment_robust(comment: str, max_retries=3, base_wait=1):
 
             if "choices" in data and data["choices"]:
                 raw_text = data["choices"][0]["message"]["content"]
-                # Try direct JSON parse
                 try:
                     parsed = json.loads(raw_text)
                 except Exception:
-                    # Try to extract first JSON block
                     try:
                         parsed = _extract_first_json(raw_text)
                     except Exception:
-                        # If not found, wait & retry
                         time.sleep(base_wait * attempt)
                         continue
 
-                # Normalize parsed content
                 sentiment = normalize_sentiment(parsed.get("sentiment", ""))
                 category = normalize_category(parsed.get("category", ""))
                 themes = parsed.get("themes") or []
@@ -245,9 +238,9 @@ def analyze_comment_robust(comment: str, max_retries=3, base_wait=1):
             time.sleep(base_wait * attempt)
             continue
 
-    # If all retries fail, return fallback and the last raw for logging
     fallback = simple_rule_fallback(comment)
     return (fallback, last_raw or "no_response_or_error")
+
 
 # =========================================================
 #  UI blocks
@@ -313,7 +306,6 @@ def sidebar_content():
 def main_app():
     sidebar_content()
 
-    # Header
     st.markdown(
         """
         <div class="big-title">Comment Classifier</div>
@@ -332,49 +324,26 @@ def main_app():
         )
         return
 
-    # File upload + sample button
-    col1, col2 = st.columns([3, 1])
-    with col1:
-        uploaded_file = st.file_uploader(
-            "Upload CSV or Excel file with a `comment` column",
-            type=["csv", "xlsx", "xls"],
-        )
-    with col2:
-        if st.button("Use sample file"):
-            # load local sample path (the file you uploaded earlier)
-            try:
-                uploaded_file = open(SAMPLE_FILE_PATH, "rb")
-                st.success("Loaded sample file from disk.")
-                # we keep a marker in session state so downstream uses same object
-                st.session_state["_use_sample_path"] = SAMPLE_FILE_PATH
-            except Exception as e:
-                st.error(f"Could not load sample file: {e}")
-                uploaded_file = None
+    uploaded_file = st.file_uploader(
+        "Upload CSV or Excel file with a `comment` column",
+        type=["csv", "xlsx", "xls"],
+    )
 
-    # If sample path is set in session, build an in-memory file-like object when reading
-    sample_path = st.session_state.get("_use_sample_path")
-
-    if uploaded_file is None and not sample_path:
+    if uploaded_file is None:
         st.info("Upload a dataset to begin the analysis.")
         return
 
-    # Read file - prefer sample_path if set
+    # Read file
     try:
-        if sample_path:
-            df = pd.read_excel(sample_path)
-            # clear after reading so later uploads work normally
-            st.session_state.pop("_use_sample_path", None)
+        name = uploaded_file.name.lower()
+        if name.endswith(".csv"):
+            df = pd.read_csv(uploaded_file)
         else:
-            name = uploaded_file.name.lower()
-            if name.endswith(".csv"):
-                df = pd.read_csv(uploaded_file)
-            else:
-                df = pd.read_excel(uploaded_file)
+            df = pd.read_excel(uploaded_file)
     except Exception as e:
         st.error(f"Error reading file: {e}")
         return
 
-    # Allow any case for 'comment'
     cols_lower = {c.lower(): c for c in df.columns}
     if "comment" not in cols_lower:
         st.error("The file must have a column named `comment` (any capitalisation).")
@@ -447,7 +416,7 @@ def main_app():
 
         st.markdown("---")
 
-        # Retry failed rows button
+        # Retry failed rows button + export
         col_retry, col_export = st.columns([1, 1])
         with col_retry:
             if st.button("Retry failed rows"):
@@ -470,7 +439,6 @@ def main_app():
                     st.experimental_rerun()
 
         with col_export:
-            # Export raw responses for investigation
             csv_bytes = result_df.to_csv(index=False).encode("utf-8-sig")
             st.download_button(
                 "Download enriched CSV (with raw responses)",
@@ -484,10 +452,9 @@ def main_app():
 
         with tab_table:
             st.subheader("Structured output")
-            # Show top N rows but allow full download
             st.dataframe(result_df.drop(columns=["raw_response"]), use_container_width=True)
+            st.markdown("**Note:** raw_response column saved in CSV for debugging (not shown here).")
 
-            # Save failed rows for quick inspection
             fails = result_df[
                 result_df["Sentiment"].isin(["Missing", "Error", "", None]) |
                 result_df["Category"].isin(["Missing", "Error", "", None])
@@ -502,7 +469,6 @@ def main_app():
                 )
 
         with tab_summary:
-            # 1) Overall sentiment distribution
             st.subheader("Sentiment distribution")
             sent_counts = (
                 result_df["Sentiment"]
@@ -513,7 +479,6 @@ def main_app():
             st.bar_chart(sent_counts)
             st.markdown("")
 
-            # 2) Top issues by category
             st.subheader("Top categories (by volume)")
             cat_counts = result_df["Category"].value_counts()
             st.bar_chart(cat_counts)
@@ -526,7 +491,6 @@ def main_app():
             st.dataframe(cat_table, use_container_width=True)
             st.markdown("")
 
-            # 3) Category vs Sentiment pivot (counts + row-wise percentages)
             st.subheader("Category vs sentiment (pivot)")
             pivot_counts = pd.crosstab(result_df["Category"], result_df["Sentiment"])
             st.markdown("**Counts**")

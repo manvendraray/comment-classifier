@@ -83,7 +83,7 @@ All results are displayed in tabular format inside the notebook.
 
 **Manvendra Ray**
 Data Analyst & Quantitative Finance Enthusiast
-📧 Contact: *(optional)*
-🔗 LinkedIn: *(optional)*
+📧 Contact: *mr6695@nyu.edu*
+🔗 LinkedIn: *https://www.linkedin.com/in/manvendraray/*
 
 

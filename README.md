@@ -64,24 +64,6 @@ All results are displayed in tabular format inside the notebook.
 
 ---
 
-## 📈 Tableau Dashboard
-
-A Tableau dashboard was built to visualize:
-
-* Sales by product category
-* Regional sales performance
-* Monthly sales trend
-
-### 🖼 Dashboard Preview
-
-*(Displayed below if you upload your screenshot as `tableau_dashboard.png`)*
-
-```
-![Dashboard](tableau_dashboard.png)
-```
-
----
-
 ## 📂 Files Included
 
 | File                              | Description                   |

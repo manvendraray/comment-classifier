@@ -1,4 +1,4 @@
-📊 Sales Performance Dashboard
+📊 Comment Calssifier
 https://customercommentclassifier.streamlit.app
 
 
